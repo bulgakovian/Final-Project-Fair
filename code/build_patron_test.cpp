@@ -1,8 +1,7 @@
 #include "Graph.h"
 #include "Node.h"
 #include "Edge.h"
-#include "Patron.h"
-#include "Booth.h"
+#include "BoothPatron.h"
 #include <iostream>
 #include <sstream>
 

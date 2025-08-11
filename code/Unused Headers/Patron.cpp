@@ -1,4 +1,4 @@
-#include "Patron.h"
+#include "BoothPatron.h"
 
 Patron::Patron(int id, int wallet, int steps, int strategy){
     this->id = id;
@@ -9,6 +9,14 @@ Patron::Patron(int id, int wallet, int steps, int strategy){
     this->state = 0;
     this->strategy = strategy;
     return;
+}
+
+void Patron::buyItem(string item, int tick){
+
+}
+
+int Patron::getWallet(){
+    return wallet;
 }
 
 void Patron::movePatron(){
@@ -28,14 +36,9 @@ void Patron::strategize(Booth* currentBooth){
 void Patron::updateHistory(int tick){
     string loc = "null";
     if(location) {loc = location->getData();}
-    
-    string activity = "Tick " + to_string(tick) + ": ," 
-    + loc + ","
-    + to_string(wallet) + ","
-    + to_string(steps) + ","
-    + P_STRATS[strategy] + ",";
-
-    history.push_back(activity);
+    stringstream activity;
+    activity << tick <<"," << loc << "," << wallet << "," << steps << ","<< P_STRATS[strategy];
+    history.push_back(activity.str());
     return;
 }
 

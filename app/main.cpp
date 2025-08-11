@@ -1,9 +1,9 @@
-#include "../code/Booth.h"
+#include "../code/BoothPatron.h"
 #include "../code/Graph.h"
 #include "../code/Node.h"
 #include "../code/Edge.h"
-#include "../code/LinkedList.h"
 #include "../code/Patron.h"
+#include "../code/SimClock.h"
 #include <cstdlib>
 #include <iostream>
 #include <string>

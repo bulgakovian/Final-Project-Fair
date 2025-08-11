@@ -2,7 +2,7 @@
 #define PATRON_H__
 
 #include "Node.h"
-#include "Booth.h"
+#include "BoothPatron.h"
 #include <iostream>
 #include <map>
 #include <string>
@@ -37,6 +37,8 @@ class Patron {
 public:
     Patron(int id, int wallet, int steps, int strategy);
     map<string, bool> generateList(int list_size, string items[], int items_size);
+    void buyItem(string item, int tick);
+    int getWallet();
     void movePatron();
     void setLocation(Node* node);
     void strategize(Booth* currentBooth);
