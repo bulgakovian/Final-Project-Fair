@@ -16,7 +16,7 @@ int main(){
     bob->generateList(2, ITEMS, ITEM_TYPES);
     bob->updateHistory(1);
     bob->updateHistory(2);
-    bob->print_log();
+    bob->printLog();
     return 0;
 
 }

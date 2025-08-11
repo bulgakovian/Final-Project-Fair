@@ -1,8 +1,4 @@
 #include "Patron.h"
-#include <iostream>
-#include <string>
-#include <utility>
-
 
 Patron::Patron(int id, int wallet, int steps, int strategy){
     this->id = id;
@@ -43,7 +39,7 @@ void Patron::updateHistory(int tick){
     return;
 }
 
-void Patron::print_log(){
+void Patron::printLog(){
     for (int i = 0; i < history.size(); i++){
         cout << history[i]<< "\\n" << endl;
     }

@@ -3,8 +3,10 @@
 
 #include "Node.h"
 #include "Booth.h"
+#include <iostream>
 #include <map>
 #include <string>
+#include <sstream>
 #include <utility>
 #include <vector>
 
@@ -39,7 +41,7 @@ public:
     void setLocation(Node* node);
     void strategize(Booth* currentBooth);
     void updateHistory(int tick);
-    void print_log();
+    void printLog();
     
 private:
     int id;

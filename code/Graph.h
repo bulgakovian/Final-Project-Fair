@@ -3,9 +3,11 @@
 
 #include "Edge.h"
 #include "Node.h"
+#include <iostream>
 #include <memory>
 #include <queue>
 #include <set>
+#include <sstream>
 #include <string>
 #include <vector>
 
