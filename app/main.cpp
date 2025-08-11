@@ -1,13 +1,13 @@
 #include "../code/Booth.h"
-#include "../code/Fair.h
 #include "../code/Graph.h"
-#include "../code/GraphNode.h"
+#include "../code/Node.h"
+#include "../code/Edge.h"
 #include "../code/LinkedList.h"
 #include "../code/Patron.h"
 #include <cstdlib>
 #include <iostream>
-#include <pair>
 #include <string>
+#include <utility>
 #include <vector>
 
 
@@ -20,21 +20,21 @@ using namespace std;
 
 // Output functions
 // Prints Overall stats and graph of fair
-void printFair(Fair* fair){
-    
+void printFair(Graph* fair){
+    return;
 }
 
 // Prints a booth ledger
 void printLedger(Booth* booth){
-    
+    return;
 }
 
 // Prints a patron log
 void printLog(Patron* patron){
-    
+    return;
 }
 
-int main {
+int main() {
     // Declare simulation parameter constants
     // Fair parameters
     const int FAIR_SIZE = 6;      // Fair size in nodes
@@ -84,7 +84,6 @@ int main {
         // Write fair graph
         // Write booth list and ledgers
         // Write patron activities
-        
     
     return 0;
 }
