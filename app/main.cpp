@@ -45,7 +45,8 @@ int main() {
     const int MAX_BOOTHS = 1;     // Maximum booths per node, for future extension
     
     // Booth parameters
-    const string ITEMS[5] = {"apple","jewelry","knicknack","shirt","toy"}
+    string ITEMS[5] = {"apple","jewelry","knicknack","shirt","toy"};
+    const int ITEM_TYPES = 5;
     const int MIN_PRICE = 1;      // Price range for shops
     const int MAX_PRICE = 5;
     const int QTY_MAX = 3;
