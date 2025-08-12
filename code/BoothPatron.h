@@ -2,6 +2,7 @@
 #define BOOTH_H__
 
 #include "Node.h"
+#include "Graph.h"
 #include <iostream>
 #include <map>
 #include <string>
@@ -54,25 +55,33 @@ class Patron {
 public:
     Patron(int id, int wallet, int steps, int strategy);
     map<string, bool> generateList(int list_size, string items[], int items_size);
-    void buyItem(string item, int tick);
+    void buyItem(string item, int price, int tick);
     int getWallet();
-    void movePatron();
+    void movePatron(Graph* graph, set<Node*> adjacent);
     void setLocation(Node* node);
     void strategize(Booth* currentBooth);
     void updateHistory(int tick);
     void printLog();
     
 private:
-    int id;
-    int wallet;
-    int steps;
-    Node* location;
-    Node* previous;
-    int state;  
-    int strategy;
-    map<string, bool> list;
+    int id;       
+    int wallet;             // Money patron has to spend
+    int steps;              // Remaining steps patron will take. 0 == exhausted
+    Node* location;         // Current location on the map
+    Node* previous;         // Last location on the map (used to avoid backtracks)
+    int state;              // Current state
+    int strategy;           // Shopping strategy
+    map<string, bool> list; // List of items the patron wants to buy.
     map<Node*,pair<string,int>> pricemap; //Used only in "Bargain" strategy
     vector<string> history;
+
+    // Movement functions. 1 for each strategy
+    Node* moveExit(Graph* graph, set<Node*> adjacent);
+    Node* moveLazy(set<Node*> adjacent);
+    Node* moveGreedy(set<Node*> adjacent);
+    Node* movePeek(set<Node*> adjacent);
+    Node* moveBargain(Graph* graph, set<Node*> adjacent);
+
     
 };
 

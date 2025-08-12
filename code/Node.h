@@ -6,6 +6,9 @@
 
 using namespace std;
 
+// Forward declaration
+class Booth;
+
 // Node discovery information (aka 'color') is described in the README.
 #define WHITE 1
 #define GRAY 2
@@ -20,6 +23,7 @@ private:
   int rank;            // Number of steps from source node in a BFS. 0
                        // means it was the source node.
   Node* predecessor;   // The predecessor node in the spanning tree.
+  Booth* booth;        // The booth at this node.
 
 public:
   // Public Node members in this block are implemented for you.
@@ -89,6 +93,11 @@ public:
   // the node that we were exploring when we first discovered a node (e.g. it
   // was WHITE when we found it).
   void setPredecessor(Node* other);
+
+  Booth* getBooth();
+  void setBooth(Booth* booth);
+
+
 };
 
 #endif // NODE_H__

@@ -199,6 +199,7 @@ void Graph::bfs(Node* start, Node* finish) {
   }
 }
 
+
 // overloading operator << lets you put a Graph object into an output
 // stream.
 ostream& operator<<(ostream& out, Graph graph) {

@@ -16,16 +16,36 @@ Patron::Patron(int id, int wallet, int steps, int strategy){
     return;
 }
 
-void Patron::buyItem(string item, int tick){
-
+// Spends money to pay for an item, adds a special line for purchase
+void Patron::buyItem(string item, int price, int tick){
+    wallet -= price;
+    list[item] = true;
+    stringstream purchase;
+    purchase << tick << "," << location->getData() << ", bought " << item << "," << price << "," << location;
+    history.push_back(purchase.str());
 }
 
 int Patron::getWallet(){
     return wallet;
 }
 
-void Patron::movePatron(){
-    //TODO
+void Patron::movePatron(Graph* graph, set<Node*> adjacent){
+    // If done or exhausted do nothing
+    if (state > 0) {return;}
+    
+    // Move following strategy
+    if (strategy == 0)          {location = moveExit(graph, adjacent);}
+    else if (strategy == 2)     {location = moveLazy(adjacent);}
+    else if (strategy == 3)     {location = moveGreedy(adjacent);}
+    else if (strategy == 4)     {location = movePeek(adjacent);}
+    else                        {location = moveBargain(graph, adjacent);}
+    if (steps <= 0){
+        state = 2;
+    }
+    // Review shop at location. 
+
+
+    // Purchase an item conistent with strategy
     return;
 }
 
@@ -63,6 +83,33 @@ map<string,bool> Patron::generateList(int list_size, string items[], int items_s
     return ret;
 }
 
+//  Movement Functions
+
+Node* Patron::moveExit(Graph* graph, set<Node*> adjacent){
+    // TODO
+    return nullptr;
+}
+
+Node* Patron::moveLazy(set<Node*> adjacent){
+    // TODO
+    return nullptr;
+}
+
+Node* Patron::moveGreedy(set<Node*> adjacent){
+    // TODO
+    return nullptr;
+}
+
+Node* Patron::movePeek(set<Node*> adjacent){
+    // TODO
+    return nullptr;
+}
+
+Node* Patron::moveBargain(Graph* graph, set<Node*> adjacent){
+    // TODO
+    return nullptr;
+}
+
 
 /*
 //  Booth Class
@@ -82,7 +129,7 @@ bool Booth::sellItem(Patron* patron, string item, int tick){
         // Patron has enough money to buy
         if (patron->getWallet() >= inventory[item].first){
             // Update patron list
-            patron->buyItem(item, tick);
+            patron->buyItem(item, inventory[item].first, tick);
 
             // Update shop variables
             income += inventory[item].first;
