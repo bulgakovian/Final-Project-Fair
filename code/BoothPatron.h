@@ -1,8 +1,9 @@
-#ifndef BOOTH_H__
-#define BOOTH_H__
+#ifndef BOOTHPATRON_H__
+#define BOOTHPATRON_H__
 
 #include "Node.h"
 #include "Graph.h"
+#include "Edge.h"
 #include <iostream>
 #include <map>
 #include <string>
@@ -43,7 +44,7 @@ const int NUM_STATES = 3;
 // Patrons can have one of 5 strategies:
 // 0 - Leaving (All items on list purchased, Patron is leaving fair)
 // 1 - Lazy    (Will take the shortest edge with no backtracking)
-// 2 - Greedy  (Will purchase any items on list if affordable, cheapest to most expensive)
+// 2 - Greedy  (Moves randomly. Will purchase any items on list if affordable, cheapest to most expensive)
 // 3 - Peek    (Will comparison shop with all adjacent nodes and move to best price)
 // 4 - Bargain (Will browse items until they find a price where they can afford entire list)
 */
@@ -57,7 +58,7 @@ public:
     map<string, bool> generateList(int list_size, string items[], int items_size);
     void buyItem(string item, int price, int tick);
     int getWallet();
-    void movePatron(Graph* graph, set<Node*> adjacent);
+    void movePatron(Graph* graph, set<Edge*> adjacent);
     void setLocation(Node* node);
     void strategize(Booth* currentBooth);
     void updateHistory(int tick);
@@ -66,7 +67,7 @@ public:
 private:
     int id;       
     int wallet;             // Money patron has to spend
-    int steps;              // Remaining steps patron will take. 0 == exhausted
+    int steps;              // Remaining steps patron will take. 0 or less == exhausted
     Node* location;         // Current location on the map
     Node* previous;         // Last location on the map (used to avoid backtracks)
     int state;              // Current state
@@ -76,11 +77,11 @@ private:
     vector<string> history;
 
     // Movement functions. 1 for each strategy
-    Node* moveExit(Graph* graph, set<Node*> adjacent);
-    Node* moveLazy(set<Node*> adjacent);
-    Node* moveGreedy(set<Node*> adjacent);
-    Node* movePeek(set<Node*> adjacent);
-    Node* moveBargain(Graph* graph, set<Node*> adjacent);
+    Node* moveExit(Graph* graph, set<Edge*> adjacent);
+    Node* moveLazy(set<Edge*>  adjacent);
+    Node* moveGreedy(set<Edge*>  adjacent);
+    Node* movePeek(set<Edge*>  adjacent);
+    Node* moveBargain(Graph* graph, set<Edge*>  adjacent);
 
     
 };

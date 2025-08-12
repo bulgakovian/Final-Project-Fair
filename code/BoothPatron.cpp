@@ -4,6 +4,8 @@
 //  Patron Class
 // 
 */
+const int MINSTEPS = 9999; // Change this if your line weights go above 9999 
+
 
 Patron::Patron(int id, int wallet, int steps, int strategy){
     this->id = id;
@@ -29,19 +31,23 @@ int Patron::getWallet(){
     return wallet;
 }
 
-void Patron::movePatron(Graph* graph, set<Node*> adjacent){
+void Patron::movePatron(Graph* graph, set<Edge*>  adjacent){
     // If done or exhausted do nothing
     if (state > 0) {return;}
+    Node* move;
     
     // Move following strategy
-    if (strategy == 0)          {location = moveExit(graph, adjacent);}
-    else if (strategy == 2)     {location = moveLazy(adjacent);}
-    else if (strategy == 3)     {location = moveGreedy(adjacent);}
-    else if (strategy == 4)     {location = movePeek(adjacent);}
-    else                        {location = moveBargain(graph, adjacent);}
+    if (strategy == 0)          {move = moveExit(graph, adjacent);}
+    else if (strategy == 2)     {move = moveLazy(adjacent);}
+    else if (strategy == 3)     {move = moveGreedy(adjacent);}
+    else if (strategy == 4)     {move = movePeek(adjacent);}
+    else                        {move = moveBargain(graph, adjacent);}
+    previous = location;
+    location = move;
     if (steps <= 0){
         state = 2;
     }
+
     // Review shop at location. 
 
 
@@ -85,27 +91,52 @@ map<string,bool> Patron::generateList(int list_size, string items[], int items_s
 
 //  Movement Functions
 
-Node* Patron::moveExit(Graph* graph, set<Node*> adjacent){
+Node* Patron::moveExit(Graph* graph, set<Edge*>  adjacent){
     // TODO
     return nullptr;
 }
 
-Node* Patron::moveLazy(set<Node*> adjacent){
+// Lazy moves to the easiest edge that is not an immediate backtrack.
+Node* Patron::moveLazy(set<Edge*>  adjacent){
+    // find the smallest edge
+    Node* ret = location;
+    // Start us with a weight larger than we know.
+    int minsteps = MINSTEPS; // Constant declared above.
+    for (auto it: adjacent){
+
+        // Don't backtrack.
+        if (it->getOther(location) != previous){
+            // Update node. Lazy takes the first instance of a minimum
+            if (it->getWeight() < minsteps)
+            {
+                ret = it->getOther(location);
+                minsteps = it->getWeight();
+            }
+        }
+    }
+    steps -= minsteps;
+    return ret;
+}
+
+// Greedy moves randomly.
+Node* Patron::moveGreedy(set<Edge*> adjacent){
+    // select a random edge
+    auto it = adjacent.begin();
+    advance(it, rand() % adjacent.size());
+    Edge* selected = *it;
+
+    // Find next location  and update steps
+    Node* ret = selected->getOther(location);
+    steps -= selected->getWeight();
+    return ret;
+}
+
+Node* Patron::movePeek(set<Edge*>  adjacent){
     // TODO
     return nullptr;
 }
 
-Node* Patron::moveGreedy(set<Node*> adjacent){
-    // TODO
-    return nullptr;
-}
-
-Node* Patron::movePeek(set<Node*> adjacent){
-    // TODO
-    return nullptr;
-}
-
-Node* Patron::moveBargain(Graph* graph, set<Node*> adjacent){
+Node* Patron::moveBargain(Graph* graph, set<Edge*> adjacent){
     // TODO
     return nullptr;
 }
