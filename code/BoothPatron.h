@@ -57,6 +57,7 @@ public:
     map<string, bool> generateList(int list_size, string items[], int items_size);
     int getWallet();
     void movePatron(Graph* graph, set<Edge*> adjacent, int tick);
+    Node* getLocation();
     void setLocation(Node* node);
     void printLog();
     void updateHistory(int tick);

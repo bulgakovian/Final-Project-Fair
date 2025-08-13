@@ -64,8 +64,8 @@ void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
     // Move following strategy
     if (strategy == 0)          {move = moveLazy(adjacent);}
     else if (strategy == 1)     {move = moveGreedy(adjacent);}
-    else if (strategy == 2)     {move = movePeek(adjacent);}
     
+    else if (strategy == 2)     {move = movePeek(adjacent);}
     
     // Move patron, exhaust if needed, update log.
     previous = location;
@@ -88,6 +88,7 @@ void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
             if (inventory.find(it->first) != inventory.end()){
                // Attempt to sell the item
                bool sold = booth->sellItem(this, it->first, tick);
+               cout << "Got past sellItem" << endl;
                // One sale unless strategy is Greedy
                if (sold && (strategy != 1)){break;}
             }
@@ -97,11 +98,15 @@ void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
     // Update history and state if list completed
     bool list_finished = true;
     for (auto it = list.begin(); it != list.end(); it++){
-        if (!it->second) {list_finished = false;}
+        if (it->second == false) {list_finished = false;}
     }
     if (list_finished) {state = 1;}
     updateHistory(tick);
     return;
+}
+
+Node* Patron::getLocation(){
+    return location;
 }
 
 void Patron::setLocation(Node* node){
@@ -109,6 +114,10 @@ void Patron::setLocation(Node* node){
 }
 
 void Patron::printLog(){
+    cout << "Patron list: "<< endl;
+    for (auto it : list){
+        cout << it.first << ": " << it.second << endl;
+    }
     for (int i = 0; i < history.size(); i++){
         cout << history[i]<< "\\n" << endl;
     }
@@ -126,14 +135,15 @@ Node* Patron::moveLazy(set<Edge*>  adjacent){
     // Start us with a weight larger than possible in the map.
     int minsteps = MINSTEPS;
     for (auto it: adjacent){
+        Edge* edge = it;
 
         // Don't backtrack.
-        if (it->getOther(location) != previous){
+        if (edge->getOther(location) != previous){
             // Update node. Lazy takes the first instance of a minimum
-            if (it->getWeight() < minsteps)
+            if (edge->getWeight() < minsteps)
             {
-                ret = it->getOther(location);
-                minsteps = it->getWeight();
+                ret = edge->getOther(location);
+                minsteps = edge->getWeight();
             }
         }
     }
@@ -163,13 +173,16 @@ Node* Patron::movePeek(set<Edge*>  adjacent){
     // For each edge
     for (auto it = adjacent.begin(); it != adjacent.end(); it++){
         // Look at shop on other side
-        Edge* curr_edge = *it;
+        Edge* curr_edge = *it;;
         Node* neighbor = curr_edge->getOther(location);
         Booth* booth = neighbor->getBooth();
-        map<string,pair<int,int>> inventory = booth->getInventory();
+        booth->printLog();
+        map<string,pair<int,int>> curr_inventory = booth->getInventory();
+
         int curr_weight = curr_edge->getWeight();
 
-        for(auto j = inventory.begin(); j != inventory.end(); j++){        
+
+        for(auto j = curr_inventory.begin(); j != curr_inventory.end(); j++){        
             // If shop has an item on our list
             if(list.find(j->first) != list.end()){
                 // Renaming for clarity

@@ -31,7 +31,7 @@ const int MAX_QTY = 3;
 
 // Patron parameters
 // Note that patron shopping lists also use the "items" from the booth parameters.
-const int NUM_PATRONS = 10;
+const int NUM_PATRONS = 1;
 const int MIN_STEPS = 15;      // Range of steps a patron can have
 const int MAX_STEPS = 30;
 const int MIN_WALLET = 5;      // Range of money a patron can have
@@ -92,6 +92,7 @@ vector<Booth*> constructBooths(vector<Node*> nodes){
     for (int i = 0; i < nodes.size(); i++){
         Booth* booth(new Booth(nodes[i], ITEMS, ITEM_TYPES, MIN_PRICE, MAX_PRICE, MAX_QTY));
         booths.push_back(booth);
+        nodes[i]->setBooth(booth);
     }
     return booths;
 }
@@ -131,13 +132,13 @@ string printLog(Patron* patron){
 int main() {
     // Declare simulation variables
     srand(time(NULL));
-    SimClock* clock = new SimClock();
-    int max_ticks = 3;            // Number of ticks in the simulation.
-                                  // Low for now due to testing
+    int clock;
+    bool patrons_done_shopping = false; // true if all patrons are done.
+    int max_ticks = 10;                  // Number of ticks in the simulation.
+                                        // Low for now due to testing
     
     // Create fair
     Graph* fair = mkgraph();
-    fair->tick("Constructed Graph");
     vector<Node*> nodes = fair->getNodes();
 
     // Seed fair with booths
@@ -149,23 +150,37 @@ int main() {
     for (int i = 0; i < patrons.size(); i++){
         int node_seed = rand() % nodes.size();
         patrons[i]->setLocation(nodes[node_seed]);
+
         // Test print of initial locations
         patrons[i]->updateHistory(0);
         patrons[i]->printLog();
     }
-    
-
 
     // Run the simulation
-        // For each tick
+    while ((clock < max_ticks)){
+        clock++;
         // Advance each patron based upon strategy
-        // Shop if needed
-    
+        for (int i = 0; i < patrons.size(); i++){
+            set<Edge*> adjacent = fair->getAdjacentEdges(patrons[i]->getLocation());
+            patrons[i]->movePatron(fair, adjacent, clock);
+        }
+        cout << "Tick #" << clock << endl;
+    }
+
     // Write output
-        // Write general stats
-        // Write fair graph
-        // Write booth list and ledgers
-        // Write patron activities
+    cout << "Simulation complete!" << endl;
+    fair->tick("Fair Graph");
+    // Write general stats
+    // Write booth list and ledgers
+    for (int i = 0; i < booths.size(); i++){
+        booths[i]->printLog();
+    }
+    // Write patron activities
+    for (int i = 0; i < patrons.size(); i++){
+        patrons[i]->printLog();
+    }
+
+    
     
     return 0;
 }
