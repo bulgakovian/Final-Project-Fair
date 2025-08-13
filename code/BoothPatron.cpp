@@ -25,27 +25,26 @@ void Patron::buyItem(string item, int price, int tick){
     wallet -= price;           // we have already confirmed that the patron can afford the purchase. 
     list[item] = true;
     stringstream purchase;
-    purchase << tick << "," << location->getData() << ", bought " << item << "," << price << "," << location;
+    purchase << tick << "," << location->getData() << ", bought " << item << "," << price << "," << location->getData();
     history.push_back(purchase.str());
 }
 
 // Creates a shopping list for a patron
 // TODO if time - incorporate this into constructor function.
-map<string,bool> Patron::generateList(int list_size, string items[], int items_size){
-    map<string,bool> ret;
+void Patron::generateList(int list_size, string items[], int items_size){
     for (int i = 0; i < list_size; i++){
         bool next = false;
         while (!next){
              // Select an item from the list
              // Right now patrons cannot have duplicate items on list.
             int item = rand() % items_size; 
-            if (ret.find(items[item]) == ret.end()){
-                ret[items[item]] = false;
+            if (list.find(items[item]) == list.end()){
+                list[items[item]] = false;
                 next = true;
             }
         }
     }
-    return ret;
+    return;
 }
 
 int Patron::getWallet(){
@@ -88,7 +87,6 @@ void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
             if (inventory.find(it->first) != inventory.end()){
                // Attempt to sell the item
                bool sold = booth->sellItem(this, it->first, tick);
-               cout << "Got past sellItem" << endl;
                // One sale unless strategy is Greedy
                if (sold && (strategy != 1)){break;}
             }
@@ -114,10 +112,13 @@ void Patron::setLocation(Node* node){
 }
 
 void Patron::printLog(){
-    cout << "Patron list: "<< endl;
+    cout << "Patron #" << id <<"." << endl;
+    cout << "Strategy: " << P_STRATS[strategy] << "." << endl;
+    cout << "List: " << endl;
     for (auto it : list){
         cout << it.first << ": " << it.second << endl;
     }
+    cout << "Activity: " << endl;
     for (int i = 0; i < history.size(); i++){
         cout << history[i]<< "\\n" << endl;
     }
@@ -211,7 +212,7 @@ void Patron::updateHistory(int tick){
     string loc = "null";
     if(location) {loc = location->getData();}
     stringstream activity;
-    activity << tick <<"," << loc << "," << wallet << "," << steps << ","<< P_STRATS[strategy];
+    activity << tick <<"," << loc << "," << wallet << "," << steps;
     history.push_back(activity.str());
     return;
 }
@@ -226,6 +227,7 @@ void Patron::updateHistory(int tick){
 Booth::Booth(Node* node, string items[], int size, int min_price, 
                 int max_price, int max_qty){
     location = node;
+    cout << "Booth " << location->getData() << ":" << endl;
     for (int i = 0; i < size; i++){
         int price = rand() % max_price + min_price;
         int qty = rand() % (max_qty + 1);
@@ -241,10 +243,13 @@ map<string,pair<int,int>> Booth::getInventory(){
 
 
 bool Booth::sellItem(Patron* patron, string item, int tick){
+    cout << "In sellItem" << endl;
     // Item in stock
     if (inventory[item].second > 0){
+        cout << item << " in stock" << endl;
         // Patron has enough money to buy
         if (patron->getWallet() >= inventory[item].first){
+            cout << "$" << patron->getWallet() << " available, " << inventory[item].first << " cost." << endl;
             // Update patron list
             patron->buyItem(item, inventory[item].first, tick);
 
@@ -261,8 +266,10 @@ bool Booth::sellItem(Patron* patron, string item, int tick){
 
 void Booth::updateLedger(string item, int price, int remain, int reg, int tick){
     stringstream sale;
-    sale << tick<< "," << item << "," << price <<"," << remain << ","<< reg;
-    ledger.push_back(sale.str());
+    sale << tick << "," << item << "," << price <<"," << remain << ","<< reg;
+    string final = sale.str();
+    cout << final << endl;;
+    ledger.push_back(final);
     return;
 }
 

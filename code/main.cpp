@@ -2,7 +2,6 @@
 #include "Graph.h"
 #include "Node.h"
 #include "Edge.h"
-#include "SimClock.h"
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -27,11 +26,11 @@ string ITEMS[5] = {"apple","jewelry","knicknack","shirt","toy"};
 const int ITEM_TYPES = 5;
 const int MIN_PRICE = 1;      // Price range for shops
 const int MAX_PRICE = 5;
-const int MAX_QTY = 3;
+const int MAX_QTY = 2;        // Maximum inventory of an item
 
 // Patron parameters
 // Note that patron shopping lists also use the "items" from the booth parameters.
-const int NUM_PATRONS = 1;
+const int NUM_PATRONS = 10;
 const int MIN_STEPS = 15;      // Range of steps a patron can have
 const int MAX_STEPS = 30;
 const int MIN_WALLET = 5;      // Range of money a patron can have
@@ -105,36 +104,20 @@ vector<Patron*> constructPatrons(int qty){
         int steps = rand() % MAX_STEPS + MIN_STEPS;
         int strategy = rand() % NUM_STRATS;
         Patron* patron(new Patron(i, wallet, steps, strategy));
+        int list_size = rand() % MAX_LIST + 1;
+        patron->generateList(list_size, ITEMS, ITEM_TYPES);
         patrons.push_back(patron);
     }
     return patrons;
 }
 
-// Output functions
-// Prints Overall stats and graph of fair
-void printFair(Graph* fair){
-    fair->tick("Fair Print");
-    return;
-}
-
-// Prints all booth ledgers
-string exportLedgers(){
-    string ret = "";
-    return ret;
-}
-
-// Prints a patron log
-string printLog(Patron* patron){
-    string ret = "";
-    return ret;
-}
 
 int main() {
     // Declare simulation variables
     srand(time(NULL));
     int clock;
     bool patrons_done_shopping = false; // true if all patrons are done.
-    int max_ticks = 10;                  // Number of ticks in the simulation.
+    int max_ticks = 15;                  // Number of ticks in the simulation.
                                         // Low for now due to testing
     
     // Create fair
@@ -171,13 +154,17 @@ int main() {
     cout << "Simulation complete!" << endl;
     fair->tick("Fair Graph");
     // Write general stats
+
     // Write booth list and ledgers
     for (int i = 0; i < booths.size(); i++){
+        cout << "Booth at node " << booths[i]->getLocation()->getData() << ":" << endl;
         booths[i]->printLog();
+        cout << endl;
     }
     // Write patron activities
     for (int i = 0; i < patrons.size(); i++){
         patrons[i]->printLog();
+        cout << endl;
     }
 
     

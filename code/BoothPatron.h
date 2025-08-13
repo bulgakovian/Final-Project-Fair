@@ -54,7 +54,7 @@ class Patron {
 public:
     Patron(int id, int wallet, int steps, int strategy);
     void buyItem(string item, int price, int tick);
-    map<string, bool> generateList(int list_size, string items[], int items_size);
+    void generateList(int list_size, string items[], int items_size);
     int getWallet();
     void movePatron(Graph* graph, set<Edge*> adjacent, int tick);
     Node* getLocation();
@@ -100,6 +100,7 @@ public:
     // Returns true if shop has an item and patron can afford the price,
     // false otherwise
     bool sellItem(Patron* patron, string item, int tick);
+    Node* getLocation(){return location;}
 
     // Prints a log of every sale at the location.
     void printLog();
