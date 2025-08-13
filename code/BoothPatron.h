@@ -93,7 +93,8 @@ private:
 
 class Booth {
 public:
-    Booth(Node* node);
+    Booth(Node* node, string items[], int size, int min_price, 
+                int max_price, int max_qty);
     map<string,pair<int,int>> getInventory();
     // Returns true if shop has an item and patron can afford the price,
     // false otherwise

@@ -210,8 +210,15 @@ void Patron::updateHistory(int tick){
 */
 
 
-Booth::Booth(Node* node){
+Booth::Booth(Node* node, string items[], int size, int min_price, 
+                int max_price, int max_qty){
     location = node;
+    for (int i = 0; i < size; i++){
+        int price = rand() % max_price + min_price;
+        int qty = rand() % (max_qty + 1);
+        inventory[items[i]] = make_pair(price, qty);
+        cout << items[i] << ": $" << price<< ", " << qty << endl;
+    }
     return;
 };
 
