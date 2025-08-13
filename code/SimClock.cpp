@@ -1,6 +1,7 @@
 #include "SimClock.h"
 
 
+
 SimClock::SimClock() {
     ticks = 0;
     return;

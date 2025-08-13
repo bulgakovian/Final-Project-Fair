@@ -1,5 +1,7 @@
 #include "Node.h"
 
+
+
 Node::Node(string s) {
   // DONE FOR YOU
   data = s;

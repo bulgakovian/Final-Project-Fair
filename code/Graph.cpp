@@ -1,6 +1,5 @@
 #include "Graph.h"
 
-using namespace std;
 
 // fwd declarations
 string make_dot(Graph* g);

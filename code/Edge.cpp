@@ -1,5 +1,6 @@
 #include "Edge.h"
 
+
 Edge::Edge(Node* n1, Node* n2, int weight) {
   // DONE FOR YOU
   a = n1;
@@ -32,6 +33,7 @@ Node* Edge::getOther(Node* current) {
   return current;
 }
 
+// Extended for weighted graphs
 int Edge::getWeight(){
   return weight;
 }

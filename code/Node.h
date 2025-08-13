@@ -94,6 +94,8 @@ public:
   // was WHITE when we found it).
   void setPredecessor(Node* other);
 
+
+  // Extensions for Fair simulation
   Booth* getBooth();
   void setBooth(Booth* booth);
 

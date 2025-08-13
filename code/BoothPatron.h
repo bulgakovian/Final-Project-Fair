@@ -34,35 +34,33 @@ class Booth;
 /* 
 // Patrons can be in one of 3 states during the simulation:
 // 0 - Active    (Will execute strategy on the next step)
-// 1 - Done      (Successfuly finished list and exited fair)
+// 1 - Done      (Successfuly finished list)
 // 2 - Exhausted (Out of steps, failed state)
 */
 const string P_STATES[] = {"Active","Done","Exhausted"};
 const int NUM_STATES = 3;
 
 /* 
-// Patrons can have one of 5 strategies:
-// 0 - Leaving (All items on list purchased, Patron is leaving fair)
-// 1 - Lazy    (Will take the shortest edge with no backtracking)
-// 2 - Greedy  (Moves randomly. Will purchase any items on list if affordable, cheapest to most expensive)
-// 3 - Peek    (Will comparison shop with all adjacent nodes and move to best price)
-// 4 - Bargain (Will browse items until they find a price where they can afford entire list)
+// Patrons can have one of 3 strategies:
+// 0 - Lazy    (Will take the shortest edge with no backtracking)
+// 1 - Greedy  (Moves randomly. Will purchase any items on list if can afford)
+// 2 - Peek    (Will comparison shop with all adjacent nodes and move to best price)
 */
 
-const string P_STRATS[] = {"Leaving","Lazy","Greedy","Peek","Bargain"};
-const int NUM_STRATS = 5;
+const string P_STRATS[] = {"Lazy","Greedy","Peek"};
+const int NUM_STRATS = 3;
 
 class Patron {
 public:
     Patron(int id, int wallet, int steps, int strategy);
-    map<string, bool> generateList(int list_size, string items[], int items_size);
     void buyItem(string item, int price, int tick);
+    map<string, bool> generateList(int list_size, string items[], int items_size);
     int getWallet();
-    void movePatron(Graph* graph, set<Edge*> adjacent);
+    void movePatron(Graph* graph, set<Edge*> adjacent, int tick);
     void setLocation(Node* node);
-    void strategize(Booth* currentBooth);
-    void updateHistory(int tick);
     void printLog();
+    void updateHistory(int tick);
+
     
 private:
     int id;       
@@ -77,12 +75,13 @@ private:
     vector<string> history;
 
     // Movement functions. 1 for each strategy
-    Node* moveExit(Graph* graph, set<Edge*> adjacent);
+    // Strategies are detailed in source file
+    // Each strategy returns a node where the Patron moves
     Node* moveLazy(set<Edge*>  adjacent);
     Node* moveGreedy(set<Edge*>  adjacent);
     Node* movePeek(set<Edge*>  adjacent);
-    Node* moveBargain(Graph* graph, set<Edge*>  adjacent);
 
+    // Shop functions 
     
 };
 
@@ -95,7 +94,7 @@ private:
 class Booth {
 public:
     Booth(Node* node);
-    
+    map<string,pair<int,int>> getInventory();
     // Returns true if shop has an item and patron can afford the price,
     // false otherwise
     bool sellItem(Patron* patron, string item, int tick);
@@ -110,6 +109,7 @@ private:
     int income;                            // Amount of money made.
     map<string,pair<int,int>> inventory;   // String is item, first int price, second int qty.
     vector<string> ledger;                 // A listing of the shop's sales.
+    
     // Logs every successful sale
     void updateLedger(string item, int price, int remain, int reg, int tick);
 };
