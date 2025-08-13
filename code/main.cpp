@@ -13,9 +13,12 @@
 using namespace std;
 
 // Declare simulation parameter constants
+// Note: there are additional weight and price constants in the Patron source file
+// These may need to be updated if you take prices or edge weights to extremes.
+
 // Fair parameters
 const int FAIR_SIZE = 7;      // Fair size in nodes
-const int MIN_WEIGHT = 1;     // Edge weight range
+const int MIN_WEIGHT = 1;     // Edge weight range. Reccomend to stay positive
 const int MAX_WEIGHT = 5;
 const int NUM_BOOTHS = 7;     // For now 1 booth per node, may change eventually 
 const int MAX_BOOTHS = 1;     // Maximum booths per node, for future extension
@@ -31,12 +34,12 @@ const int MAX_QTY = 2;        // Maximum inventory of an item
 // Patron parameters
 // Note that patron shopping lists also use the "items" from the booth parameters.
 const int NUM_PATRONS = 10;
-const int MIN_STEPS = 15;      // Range of steps a patron can have
-const int MAX_STEPS = 30;
+const int MIN_STEPS = 12;      // Range of steps a patron can have
+const int MAX_STEPS = 20;
 const int MIN_WALLET = 5;      // Range of money a patron can have
 const int MAX_WALLET = 12;
 const int MIN_LIST = 1;        // Size of shopping list
-const int MAX_LIST = 2;
+const int MAX_LIST = 3;
 
 // Helper functions
 
@@ -157,7 +160,6 @@ int main() {
 
     // Write booth list and ledgers
     for (int i = 0; i < booths.size(); i++){
-        cout << "Booth at node " << booths[i]->getLocation()->getData() << ":" << endl;
         booths[i]->printLog();
         cout << endl;
     }

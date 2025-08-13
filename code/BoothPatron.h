@@ -53,14 +53,24 @@ const int NUM_STRATS = 3;
 class Patron {
 public:
     Patron(int id, int wallet, int steps, int strategy);
+
+    // Spend money and log sale
     void buyItem(string item, int price, int tick);
+
+    // Create a randomized shopping list for patron
     void generateList(int list_size, string items[], int items_size);
-    int getWallet();
+
+    // The heart of the simulation. Controls patron movement.
     void movePatron(Graph* graph, set<Edge*> adjacent, int tick);
-    Node* getLocation();
-    void setLocation(Node* node);
+
+    // logging functions
     void printLog();
     void updateHistory(int tick);
+
+    // Get and set functions
+    Node* getLocation()             {return location;}
+    int getWallet()                 {return wallet;}
+    void setLocation(Node* node)    {location = node;}
 
     
 private:
@@ -75,15 +85,12 @@ private:
     map<Node*,pair<string,int>> pricemap; //Used only in "Bargain" strategy
     vector<string> history;
 
-    // Movement functions. 1 for each strategy
-    // Strategies are detailed in source file
+    // Movement functions. One for each strategy
+    // Strategy steps are detailed in source file comments
     // Each strategy returns a node where the Patron moves
     Node* moveLazy(set<Edge*>  adjacent);
     Node* moveGreedy(set<Edge*>  adjacent);
     Node* movePeek(set<Edge*>  adjacent);
-
-    // Shop functions 
-    
 };
 
 
@@ -96,14 +103,16 @@ class Booth {
 public:
     Booth(Node* node, string items[], int size, int min_price, 
                 int max_price, int max_qty);
-    map<string,pair<int,int>> getInventory();
     // Returns true if shop has an item and patron can afford the price,
     // false otherwise
     bool sellItem(Patron* patron, string item, int tick);
-    Node* getLocation(){return location;}
-
+   
     // Prints a log of every sale at the location.
     void printLog();
+
+    // Get and set functions
+    map<string,pair<int,int>> getInventory()    {return inventory;}
+    Node* getLocation()                         {return location;}
 
 
 private:

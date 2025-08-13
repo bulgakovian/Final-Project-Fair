@@ -5,7 +5,7 @@
 //  Patron Class
 // 
 */
-const int MINSTEPS = 9999; // Change this if your line weights go above 9999
+const int MAXWEIGHT = 9999; // Change this if your line weights go above 9999
 const int MAXPRICE = 9999; // Change this if your items cost more than 9999 
 
 
@@ -30,13 +30,12 @@ void Patron::buyItem(string item, int price, int tick){
 }
 
 // Creates a shopping list for a patron
-// TODO if time - incorporate this into constructor function.
 void Patron::generateList(int list_size, string items[], int items_size){
     for (int i = 0; i < list_size; i++){
         bool next = false;
         while (!next){
-             // Select an item from the list
-             // Right now patrons cannot have duplicate items on list.
+            // Select an item from the list
+            // Right now patrons cannot have duplicate items on list.
             int item = rand() % items_size; 
             if (list.find(items[item]) == list.end()){
                 list[items[item]] = false;
@@ -47,23 +46,22 @@ void Patron::generateList(int list_size, string items[], int items_size){
     return;
 }
 
-int Patron::getWallet(){
-    return wallet;
-}
 
 
 // Movement selector function. 
-// Performs a move and shopping action.
+// This is the "main" patron function and the heart of the simulation.
+// It performs a move action first based on strategy. 
+// Once the patron has moved, it performs a shopping action.
+// Right now this structure means that patrons do not shop at their seed node.
+// May decouple these in future versions.
 void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
     // If done or exhausted do nothing
     if (state > 0) {return;}
-
     Node* move;
     
     // Move following strategy
     if (strategy == 0)          {move = moveLazy(adjacent);}
     else if (strategy == 1)     {move = moveGreedy(adjacent);}
-    
     else if (strategy == 2)     {move = movePeek(adjacent);}
     
     // Move patron, exhaust if needed, update log.
@@ -87,7 +85,9 @@ void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
             if (inventory.find(it->first) != inventory.end()){
                // Attempt to sell the item
                bool sold = booth->sellItem(this, it->first, tick);
-               // One sale unless strategy is Greedy
+
+               // Greedy will make multiple purchases
+               // Lazy and Peek will only make one purchase
                if (sold && (strategy != 1)){break;}
             }
         }
@@ -103,14 +103,8 @@ void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
     return;
 }
 
-Node* Patron::getLocation(){
-    return location;
-}
 
-void Patron::setLocation(Node* node){
-    location = node;
-}
-
+// Prints out the patron history as well as identifying statistics
 void Patron::printLog(){
     cout << "Patron #" << id <<"." << endl;
     cout << "Strategy: " << P_STRATS[strategy] << "." << endl;
@@ -127,19 +121,19 @@ void Patron::printLog(){
 
 
 
-//  Movement Functions
+//  MOVEMENT STRATEGY FUNCTIONS
 
 // Lazy moves to the easiest edge that is not an immediate backtrack.
 Node* Patron::moveLazy(set<Edge*>  adjacent){
-    // find the smallest edge
     Node* ret = location;
+
     // Start us with a weight larger than possible in the map.
-    int minsteps = MINSTEPS;
+    int minsteps = MAXWEIGHT;
     for (auto it: adjacent){
         Edge* edge = it;
-
         // Don't backtrack.
         if (edge->getOther(location) != previous){
+
             // Update node. Lazy takes the first instance of a minimum
             if (edge->getWeight() < minsteps)
             {
@@ -165,28 +159,27 @@ Node* Patron::moveGreedy(set<Edge*> adjacent){
     return ret;
 }
 
+// Peek patrons review the inventory 
 Node* Patron::movePeek(set<Edge*>  adjacent){
-    // Make tracking map
-    // Key: item, value:pair of node and price at location
+    // Make tracking variables to find best deal
     Node* bargain_node = nullptr;
     int bargain_price = MAXPRICE;
     int bargain_weight;
+
     // For each edge
     for (auto it = adjacent.begin(); it != adjacent.end(); it++){
         // Look at shop on other side
-        Edge* curr_edge = *it;;
+        Edge* curr_edge = *it;
         Node* neighbor = curr_edge->getOther(location);
         Booth* booth = neighbor->getBooth();
-        booth->printLog();
         map<string,pair<int,int>> curr_inventory = booth->getInventory();
-
         int curr_weight = curr_edge->getWeight();
 
-
+        //Iterate through shop's inventory
         for(auto j = curr_inventory.begin(); j != curr_inventory.end(); j++){        
-            // If shop has an item on our list
-            if(list.find(j->first) != list.end()){
-                // Renaming for clarity
+           
+            // If shop sells an item on our ilist and it is in stock
+            if((list.find(j->first) != list.end()) && (j->second.second > 0) ){
                 int booth_price = j->second.first;
             
                 // Check its price and log location/price if lower
@@ -198,6 +191,7 @@ Node* Patron::movePeek(set<Edge*>  adjacent){
             }
         }
     }
+
     // Fallback, move randomly if no items on list available
     if (bargain_node == nullptr){
         return moveGreedy(adjacent);
@@ -207,7 +201,7 @@ Node* Patron::movePeek(set<Edge*>  adjacent){
     return bargain_node;
 }
 
-
+// Records the history of each move for the patron.
 void Patron::updateHistory(int tick){
     string loc = "null";
     if(location) {loc = location->getData();}
@@ -237,13 +231,9 @@ Booth::Booth(Node* node, string items[], int size, int min_price,
     return;
 };
 
-map<string,pair<int,int>> Booth::getInventory(){
-    return inventory;
-}
-
-
+// Checks that a requested item is in stock and that the patron can afford it
+// If they can, asks the patron to buy the item and updates shop variables.
 bool Booth::sellItem(Patron* patron, string item, int tick){
-    cout << "In sellItem" << endl;
     // Item in stock
     if (inventory[item].second > 0){
         cout << item << " in stock" << endl;
@@ -264,6 +254,7 @@ bool Booth::sellItem(Patron* patron, string item, int tick){
     return false;
 }
 
+// Records sales ledger for history
 void Booth::updateLedger(string item, int price, int remain, int reg, int tick){
     stringstream sale;
     sale << tick << "," << item << "," << price <<"," << remain << ","<< reg;
@@ -273,7 +264,10 @@ void Booth::updateLedger(string item, int price, int remain, int reg, int tick){
     return;
 }
 
+// Prints out the Booth sale history as well as identifying statistics
 void Booth::printLog(){
+    cout << "Booth at node " << getLocation()->getData() << ":" << endl;
+    cout << "Final income: " << income << endl;
     for (int i = 0; i < ledger.size(); i++){
         cout << ledger[i]<< "\\n" << endl;
     }
