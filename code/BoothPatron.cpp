@@ -8,6 +8,15 @@
 const int MAXWEIGHT = 9999; // Change this if your line weights go above 9999
 const int MAXPRICE = 9999; // Change this if your items cost more than 9999 
 
+// Patron strategies. Add or alter as needed.
+const int LAZY = 0;
+const int GREEDY = 1;
+const int PEEK = 2;
+
+// Patron states.
+const int ACTIVE = 0;
+const int DONE = 1;
+const int EXHAUSTED = 2;
 
 Patron::Patron(int id, int wallet, int steps, int strategy){
     this->id = id;
@@ -60,15 +69,15 @@ void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
     Node* move;
     
     // Move following strategy
-    if (strategy == 0)          {move = moveLazy(adjacent);}
-    else if (strategy == 1)     {move = moveGreedy(adjacent);}
-    else if (strategy == 2)     {move = movePeek(adjacent);}
+    if (strategy == LAZY)            {move = moveLazy(adjacent);}
+    else if (strategy == GREEDY)     {move = moveGreedy(adjacent);}
+    else if (strategy == PEEK)       {move = movePeek(adjacent);}
     
     // Move patron, exhaust if needed, update log.
     previous = location;
     location = move;
     if (steps <= 0){
-        state = 2;
+        state = EXHAUSTED;
     }
 
     // Review shop at location
@@ -88,7 +97,7 @@ void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
 
                // Greedy will make multiple purchases
                // Lazy and Peek will only make one purchase
-               if (sold && (strategy != 1)){break;}
+               if (sold && (strategy != GREEDY)){break;}
             }
         }
     }
@@ -98,7 +107,7 @@ void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
     for (auto it = list.begin(); it != list.end(); it++){
         if (it->second == false) {list_finished = false;}
     }
-    if (list_finished) {state = 1;}
+    if (list_finished) {state = DONE;}
     updateHistory(tick);
     return;
 }
@@ -226,7 +235,7 @@ Booth::Booth(Node* node, string items[], int size, int min_price,
         int price = rand() % max_price + min_price;
         int qty = rand() % (max_qty + 1);
         inventory[items[i]] = make_pair(price, qty);
-        cout << items[i] << ": $" << price<< ", " << qty << endl;
+        cout << items[i] << ": $" << price<< ", " << qty << endl << endl;
     }
     return;
 };
@@ -236,14 +245,10 @@ Booth::Booth(Node* node, string items[], int size, int min_price,
 bool Booth::sellItem(Patron* patron, string item, int tick){
     // Item in stock
     if (inventory[item].second > 0){
-        cout << item << " in stock" << endl;
         // Patron has enough money to buy
         if (patron->getWallet() >= inventory[item].first){
-            cout << "$" << patron->getWallet() << " available, " << inventory[item].first << " cost." << endl;
-            // Update patron list
+            // Update patron list and shop varibles
             patron->buyItem(item, inventory[item].first, tick);
-
-            // Update shop variables
             income += inventory[item].first;
             inventory[item].second--;
             updateLedger(item,inventory[item].first, inventory[item].second, income, tick);

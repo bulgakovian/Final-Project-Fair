@@ -22,6 +22,7 @@ const int MIN_WEIGHT = 1;     // Edge weight range. Reccomend to stay positive
 const int MAX_WEIGHT = 5;
 const int NUM_BOOTHS = 7;     // For now 1 booth per node, may change eventually 
 const int MAX_BOOTHS = 1;     // Maximum booths per node, for future extension
+const int TICKS = 15;         // Number of ticks the simulation will run
 
 
 // Booth parameters
@@ -119,16 +120,13 @@ int main() {
     // Declare simulation variables
     srand(time(NULL));
     int clock;
-    bool patrons_done_shopping = false; // true if all patrons are done.
-    int max_ticks = 15;                  // Number of ticks in the simulation.
-                                        // Low for now due to testing
     
     // Create fair
     Graph* fair = mkgraph();
     vector<Node*> nodes = fair->getNodes();
 
     // Seed fair with booths
-    // Again for now we are just building one booth per node
+    // For now we are just building one booth per node
     vector<Booth*> booths = constructBooths(fair->getNodes());
 
     // Create patrons and establish initial positions
@@ -137,20 +135,19 @@ int main() {
         int node_seed = rand() % nodes.size();
         patrons[i]->setLocation(nodes[node_seed]);
 
-        // Test print of initial locations
+        // Print of initial locations
         patrons[i]->updateHistory(0);
         patrons[i]->printLog();
     }
 
     // Run the simulation
-    while ((clock < max_ticks)){
+    while ((clock < TICKS)){
         clock++;
         // Advance each patron based upon strategy
         for (int i = 0; i < patrons.size(); i++){
             set<Edge*> adjacent = fair->getAdjacentEdges(patrons[i]->getLocation());
             patrons[i]->movePatron(fair, adjacent, clock);
         }
-        cout << "Tick #" << clock << endl;
     }
 
     // Write output

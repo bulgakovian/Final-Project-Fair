@@ -96,8 +96,8 @@ public:
 
 
   // Extensions for Fair simulation
-  Booth* getBooth();
-  void setBooth(Booth* booth);
+  Booth* getBooth()           {return booth;}
+  void setBooth(Booth* booth) {this->booth = booth;}
 
 
 };

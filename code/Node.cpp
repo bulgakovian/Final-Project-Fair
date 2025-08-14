@@ -80,13 +80,6 @@ void Node::setPredecessor(Node* other) {
   this->predecessor = other;
 }
 
-Booth* Node::getBooth(){
-  return booth;
-}
-
-void Node::setBooth(Booth* booth){
-  this->booth = booth;
-}
 
 
 // overloading operator << lets you put a Node object into an output
