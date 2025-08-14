@@ -28,7 +28,7 @@ public:
     bool sellItem(Patron* patron, string item, int tick);
    
     // Prints a log of every sale at the location.
-    void printLog();
+    string printLog();
 
     // Get and set functions
     map<string,pair<int,int>> getInventory()    {return inventory;}

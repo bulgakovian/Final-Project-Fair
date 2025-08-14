@@ -6,6 +6,7 @@
 #include "../code/include/Node.h"
 #include "../code/include/Edge.h"
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -37,7 +38,7 @@ const int MAX_QTY = 2;        // Maximum inventory of an item
 
 // Patron parameters
 // Note that patron shopping lists also use the "items" from the booth parameters.
-const int NUM_PATRONS = 10;
+const int NUM_PATRONS = 20;
 const int MIN_STEPS = 12;      // Range of steps a patron can have
 const int MAX_STEPS = 20;
 const int MIN_WALLET = 5;      // Range of money a patron can have
@@ -49,7 +50,7 @@ const int MAX_LIST = 3;
 
 // Seed functions
 Graph* mkgraph(){
-    // For testing purposes, we're making a static graph with 7 nodes
+    // For testing purposes, we're making a static graph with 10 nodes
     // Future work may include procedurally generated graphs
     Graph* ret(new Graph());
 
@@ -60,15 +61,26 @@ Graph* mkgraph(){
     Node* e(new Node("e"));
     Node* f(new Node("f"));
     Node* g(new Node("g"));
+    Node* h(new Node("h"));
+    Node* i(new Node("i"));
+    Node* j(new Node("j"));
 
     Edge* ab(new Edge(a,b,2));
+    Edge* ai(new Edge(a,i,3));
     Edge* bc(new Edge(b,c,5));
     Edge* bd(new Edge(b,d,1));
+    Edge* bi(new Edge(b,i,1));
     Edge* ce(new Edge(c,e,4));
     Edge* cf(new Edge(c,f,1));
     Edge* cg(new Edge(c,g,3));
+    Edge* ch(new Edge(c,h,2));
     Edge* ed(new Edge(e,d,2));
     Edge* fg(new Edge(f,g,3));
+    Edge* gh(new Edge(g,h,1));
+    Edge* hi(new Edge(h,i,3));
+    Edge* hj(new Edge(h,j,2));
+    Edge* ij(new Edge(i,j,4));
+
 
     ret->addNode(a);
     ret->addNode(b);
@@ -77,15 +89,26 @@ Graph* mkgraph(){
     ret->addNode(e);
     ret->addNode(f);
     ret->addNode(g);
+    ret->addNode(h);
+    ret->addNode(i);
+    ret->addNode(j);
+
 
     ret->addEdge(ab);
+    ret->addEdge(ai);
     ret->addEdge(bc);
     ret->addEdge(bd);
+    ret->addEdge(bi);
     ret->addEdge(ce);
     ret->addEdge(cf);
     ret->addEdge(cg);
+    ret->addEdge(ch);
     ret->addEdge(ed);
     ret->addEdge(fg);
+    ret->addEdge(gh);
+    ret->addEdge(hi);
+    ret->addEdge(hj);
+    ret->addEdge(ij);
 
     ret->setDirected(false);
     ret->clear();
@@ -122,7 +145,7 @@ vector<Patron*> constructPatrons(int qty){
 int main() {
     // Declare simulation variables
     srand(time(NULL));
-    int clock;
+    int clock = 0;
     
     // Create fair
     Graph* fair = mkgraph();
@@ -130,9 +153,11 @@ int main() {
 
     // Seed fair with booths
     // For now we are just building one booth per node
+    cout << endl << "#### INITIAL BOOTH CONDITIONS" << endl << endl;
     vector<Booth*> booths = constructBooths(fair->getNodes());
 
     // Create patrons and establish initial positions
+    cout << endl << endl << "#### INITIAL PATRON CONDITIONS" << endl << endl;
     vector<Patron*> patrons = constructPatrons(NUM_PATRONS);
     for (int i = 0; i < patrons.size(); i++){
         int node_seed = rand() % nodes.size();
@@ -140,12 +165,15 @@ int main() {
 
         // Print of initial locations
         patrons[i]->updateHistory(0);
-        patrons[i]->printLog();
+        cout << patrons[i]->printLog();
+        cout << endl;
     }
 
     // Run the simulation
+    cout << endl << endl << "#### STARTING SIMULATION ####" << endl << endl;
     while ((clock < TICKS)){
         clock++;
+        cout << "Tick " << clock << endl;
         // Advance each patron based upon strategy
         for (int i = 0; i < patrons.size(); i++){
             set<Edge*> adjacent = fair->getAdjacentEdges(patrons[i]->getLocation());
@@ -154,20 +182,23 @@ int main() {
     }
 
     // Write output
-    cout << "Simulation complete!" << endl;
+    cout << endl << "#### SIMULATION COMPLETE! ####" << endl << endl;
     fair->tick("Fair Graph");
     // Write general stats
 
     // Write booth list and ledgers
+    ofstream boothstream("booths.csv");
     for (int i = 0; i < booths.size(); i++){
-        booths[i]->printLog();
-        cout << endl;
+        boothstream << booths[i]->printLog();
     }
+    boothstream.close();
+
     // Write patron activities
+    ofstream patronstream("patrons.csv");
     for (int i = 0; i < patrons.size(); i++){
-        patrons[i]->printLog();
-        cout << endl;
+        patronstream << patrons[i]->printLog();
     }
+    patronstream.close();
 
     
     

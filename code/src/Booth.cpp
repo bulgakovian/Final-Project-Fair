@@ -16,8 +16,9 @@ Booth::Booth(Node* node, string items[], int size, int min_price,
         int price = rand() % max_price + min_price;
         int qty = rand() % (max_qty + 1);
         inventory[items[i]] = make_pair(price, qty);
-        cout << items[i] << ": $" << price<< ", " << qty << endl << endl;
+        cout << items[i] << ": $" << price<< ", " << qty << endl;
     }
+    cout << endl;
     return;
 };
 
@@ -45,17 +46,19 @@ void Booth::updateLedger(string item, int price, int remain, int reg, int tick){
     stringstream sale;
     sale << tick << "," << item << "," << price <<"," << remain << ","<< reg;
     string final = sale.str();
-    cout << final << endl;;
     ledger.push_back(final);
     return;
 }
 
 // Prints out the Booth sale history as well as identifying statistics
-void Booth::printLog(){
-    cout << "Booth at node " << getLocation()->getData() << ":" << endl;
-    cout << "Final income: " << income << endl;
+string Booth::printLog(){
+    stringstream out;
+    out << "Booth at node " << getLocation()->getData() << endl;
+    out << "Final income: " << income << endl;
+    out << "Tick,Item,Price,Remaining,Income" << endl;
     for (int i = 0; i < ledger.size(); i++){
-        cout << ledger[i]<< "\\n" << endl;
+        out << ledger[i]<< endl;
     }
-    return;
+    out << endl;
+    return out.str();
 }

@@ -55,7 +55,7 @@ public:
     void movePatron(Graph* graph, set<Edge*> adjacent, int tick);
 
     // logging functions
-    void printLog();
+    string printLog();
     void updateHistory(int tick);
 
     // Get and set functions

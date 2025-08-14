@@ -65,7 +65,7 @@ void Patron::generateList(int list_size, string items[], int items_size){
 // May decouple these in future versions.
 void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
     // If done or exhausted do nothing
-    if (state > 0) {return;}
+    if (state > ACTIVE) {return;}
     Node* move;
     
     // Move following strategy
@@ -114,18 +114,25 @@ void Patron::movePatron(Graph* graph, set<Edge*>  adjacent, int tick){
 
 
 // Prints out the patron history as well as identifying statistics
-void Patron::printLog(){
-    cout << "Patron #" << id <<"." << endl;
-    cout << "Strategy: " << P_STRATS[strategy] << "." << endl;
-    cout << "List: " << endl;
+string Patron::printLog(){
+    stringstream out;
+    out << "Patron #" << id <<"." << endl;
+    out << "Strategy: " << P_STRATS[strategy] << "." << endl;
+    out << "List: " << endl;
     for (auto it : list){
-        cout << it.first << ": " << it.second << endl;
+        out << it.first << ": " << it.second << endl;
     }
-    cout << "Activity: " << endl;
+    out << "Activity: " << endl;
+    out << "Tick,Node,Wallet,Steps" << endl;
     for (int i = 0; i < history.size(); i++){
-        cout << history[i]<< "\\n" << endl;
+        out << history[i]<< endl;
     }
-    return;
+    out << "End state: "; 
+    if (state == ACTIVE) {out << "ACTIVE" << endl;}
+    if (state == DONE) {out << "DONE" << endl;}
+    if (state == EXHAUSTED) {out << "EXHAUSTED" << endl;}
+    out << endl;
+    return out.str();
 }
 
 

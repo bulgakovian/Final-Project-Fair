@@ -23,3 +23,6 @@ Patron.o: $(SRC_DIR)Patron.cpp $(INC_DIR)Patron.h
 
 clean:
 	rm *.o Fair.exe
+
+cleancsv:
+	rm *.csv
