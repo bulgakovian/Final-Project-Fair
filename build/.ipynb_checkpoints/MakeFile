@@ -1,7 +1,0 @@
-INC_DIR = ../code/include/
-SRC_DIR = ../code/src/
-MAIN_DIR = ../code/
-CXX = g++
-
-Application: Booth.o Edge.o Graph.o Node.o Patron.o main.cpp
-	g++ Booth.o Edge.o Graph.o Node.o Patron.o main.cpp -o Fair.exe

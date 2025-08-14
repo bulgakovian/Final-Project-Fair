@@ -1,5 +1,5 @@
-#include "Booth.h"
-#include "Patron.h"
+#include "../include/Booth.h"
+#include "../include/Patron.h"
 
 
 /*

@@ -1,4 +1,4 @@
-#include "Edge.h"
+#include "../include/Edge.h"
 
 
 Edge::Edge(Node* n1, Node* n2, int weight) {

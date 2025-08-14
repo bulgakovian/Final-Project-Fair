@@ -1,4 +1,4 @@
-#include "Graph.h"
+#include "../include/Graph.h"
 
 
 // fwd declarations
@@ -262,7 +262,7 @@ string make_dot(Graph* g) {
     con = "->";
     gt = "digraph";
   }
-  ss << gt << " homework {" << endl;
+  ss << gt << " Fair {" << endl;
   int c, dt, ft, r;
   string textColor = "black";
   for (auto it = nodes.begin(); it != nodes.end(); ++it) {
