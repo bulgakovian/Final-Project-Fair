@@ -16,7 +16,7 @@ While I haven't used a formal algorithm structure, I have developed a few algori
 ----
 
 # Implementation Notes - How to use and where to look.
-The program Fair.exe should run on compile using the make file in the build folder. executing the file will run a simulated fair with two output csvs: `booths.csv` and `patrons.csv`. These log the sales at a given booth and the path of a patron as they move through the fair respectively.
+The program **Fair.exe** should run on compile using the **Makefile** in the **build** folder. executing the file will run a simulated fair with some console output and two output csvs: `booths.csv` and `patrons.csv`. These log the sales at a given booth and the path of a patron as they move through the fair respectively, so you can track activity and compare strategies and locations.
 
 If you'd like to mess with parameters, take a look at **main.cpp**; it contains most of the constants at the top of the file; changing the int values of these constants will modify the size of the simulation and its parameters. Have fun, it has scaled pretty well in testing!
 
