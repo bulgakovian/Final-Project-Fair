@@ -157,7 +157,7 @@ int main() {
     vector<Booth*> booths = constructBooths(fair->getNodes());
 
     // Create patrons and establish initial positions
-    cout << endl << endl << "#### INITIAL PATRON CONDITIONS" << endl << endl;
+    cout << endl << endl << "#### INITIAL PATRON CONDITIONS ####" << endl << endl;
     vector<Patron*> patrons = constructPatrons(NUM_PATRONS);
     for (int i = 0; i < patrons.size(); i++){
         int node_seed = rand() % nodes.size();
