@@ -153,7 +153,7 @@ int main() {
 
     // Seed fair with booths
     // For now we are just building one booth per node
-    cout << endl << "#### INITIAL BOOTH CONDITIONS" << endl << endl;
+    cout << endl << "#### INITIAL BOOTH CONDITIONS ####" << endl << endl;
     vector<Booth*> booths = constructBooths(fair->getNodes());
 
     // Create patrons and establish initial positions
